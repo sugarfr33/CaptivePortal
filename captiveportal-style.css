@@ -1,0 +1,19 @@
+body {
+  background-color: black;
+}
+
+.horizontal-clear {
+  margin: 8px;
+}
+
+.btn-group.special {
+  display: flex;
+}
+
+.special .btn {
+  flex: 1
+}
+
+.label-style {
+  color: #fff; font-weight: 600;
+}

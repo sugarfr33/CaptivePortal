@@ -24,11 +24,7 @@ session_start();
 
 <body>
     <?php
-
-    require_once("filter.inc");
-    require_once("shaper.inc");
-
-    $cpdb = captiveportal_read_db();
+        $cpdb = captiveportal_read_db();
     
         
         function print_details($cpent) {

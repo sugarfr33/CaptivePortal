@@ -25,21 +25,11 @@
                 <!-- Custom couresel Start -->
                 <!-- Note: Image size is 644 x 329 -->
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                    <ol class="carousel-indicators">
-                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    <ol class="carousel-indicators" id="carousel_indicator">
+                        <!-- captiveportal-customjs.js -->
                     </ol>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                        <img class="d-block w-100" src="captiveportal-1.jpg" alt="First slide">
-                        </div>
-                        <div class="carousel-item">
-                        <img class="d-block w-100" src="captiveportal-2.jpg" alt="Second slide">
-                        </div>
-                        <div class="carousel-item">
-                        <img class="d-block w-100" src="captiveportal-3.jpg" alt="Third slide">
-                        </div>
+                    <div class="carousel-inner" id="carousel_image">
+                        <!-- captiveportal-customjs.js -->
                     </div>
                     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -89,12 +79,8 @@
                 </button>
                 <div class="horizontal-clear"></div>
                 <div class="collapse" id="collapseExample">
-                    <div class="card card-body">
-                        <h6><span class="badge badge-primary">05 Pesos</span> 1 Hour</h6>
-                        <h6><span class="badge badge-secondary">10 Pesos</span> 2 Hours</h6>
-                        <h6><span class="badge badge-success">15 Pesos</span> 4 Hours</h6>
-                        <h6><span class="badge badge-danger">20 Pesos</span> 5 Hours</h6>
-                        <h6><span class="badge badge-info">30 Pesos</span> 1 Day</h6>
+                    <div class="card card-body" id="rate">
+                        <!-- captiveportal-customjs.js -->
                     </div>
                 </div>
             </div>
@@ -105,6 +91,9 @@
     <script src="captiveportal-jquery-3.2.1.slim.min.js"></script>
     <script src="captiveportal-popper-1.12.9.min.js"></script>
     <script src="captiveportal-bootstrap.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="captiveportal-customjs.js"></script>
 
     <script>
         $('#btn_voucher_form').click(function(){

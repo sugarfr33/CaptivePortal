@@ -24,7 +24,52 @@ session_start();
 
 <body>
     <?php
-        //$remaining_time = 5;
+
+    require_once("filter.inc");
+    require_once("shaper.inc");
+
+    $cpdb = captiveportal_read_db();
+    
+        
+        function print_details($cpent) {
+            global $config, $cpzone, $cpzoneid;
+        
+        
+            /* print the time left before session timeout or session terminate time or the closer of the two if both are set */
+            if (!empty($cpent[7]) && !empty($cpent[9])) {
+                $session_time_left = min($cpent[0] + $cpent[7] - time(),$cpent[9] - time());
+                printf(gettext("Session time left: %s"), convert_seconds_to_dhms($session_time_left));
+            } elseif (!empty($cpent[7]) && empty($cpent[9])) {
+                $session_time_left = $cpent[0] + $cpent[7] - time();
+                printf(gettext("Session time left: %s"), convert_seconds_to_dhms($session_time_left));
+            } elseif (empty($cpent[7]) && !empty($cpent[9])) {
+                $session_time_left = $cpent[9] - time();
+                printf(gettext("Session time left: %s"), convert_seconds_to_dhms($session_time_left));
+            }
+
+            printf(gettext("Session time left: %s"), $session_time_left);
+        }
+
+        function get_TimeRemaining($cpent) {
+            /* print the time left before session timeout or session terminate time or the closer of the two if both are set */
+            if (!empty($cpent[7]) && !empty($cpent[9])) {
+                $session_time_left = min($cpent[0] + $cpent[7] - time(),$cpent[9] - time());
+            } elseif (!empty($cpent[7]) && empty($cpent[9])) {
+                $session_time_left = $cpent[0] + $cpent[7] - time();
+            } elseif (empty($cpent[7]) && !empty($cpent[9])) {
+                $session_time_left = $cpent[9] - time();
+            }
+            return $session_time_left;
+        }
+
+        foreach ($cpdb as $cpent) { 
+            if (htmlspecialchars($cpent[2]) == $clientip) {
+                $remaining_time = get_TimeRemaining($cpent);
+                break;
+            }
+        }
+
+        //$remaining_time = 324935;
         if (isset($remaining_time)) {
             $_SESSION["remaining_time"] = $remaining_time;
             date_default_timezone_set('Asia/Manila');
@@ -33,65 +78,22 @@ session_start();
             $_SESSION["month"] = date('m', time()) - 1;
             $_SESSION["day"] = date('d', time());
             $_SESSION["hour"] = date('H', time());
-            $_SESSION["minute"] = date('i', time());
-            $_SESSION["second"] = date('s', time());
-        }
-
-       
-
-        function secondsToWords($seconds) {
-        $ret = "";
-
-        $days = intval(intval($seconds) / (360024));
-        if($days> 0)
-        {
-            $ret .= "$days day(s) ";
-        }
-
-
-        $hours = (intval($seconds) / 3600) % 24;
-        if($hours > 0)
-        {
-            $ret .= "$hours hour(s) ";
-        }
-
-
-        $minutes = (intval($seconds) / 60) % 60;
-        if($minutes > 0)
-        {
-            $ret .= "$minutes minute(s) ";
-        }
-
-
-        $seconds = intval($seconds) % 60;
-        if ($seconds > 0) {
-            $ret .= "$seconds seconds";
-        }
-
-        return $ret;
+            $_SESSION["minute"] = date('i', time()) - 2;
+            $_SESSION["second"] = date('s', time()) - 10;
         }
     ?>
+
     <form action="<?=$logouturl;?>" method="post">
         <div class="container p-1">
             <div class="border border-warning rounded p-2">
                 <!-- Custom couresel Start -->
                 <!-- Note: Image size is 644 x 329 -->
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                    <ol class="carousel-indicators">
-                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    <ol class="carousel-indicators" id="carousel_indicator">
+                        <!-- captiveportal-customjs.js -->
                     </ol>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                        <img class="d-block w-100" src="captiveportal-1.jpg" alt="First slide">
-                        </div>
-                        <div class="carousel-item">
-                        <img class="d-block w-100" src="captiveportal-2.jpg" alt="Second slide">
-                        </div>
-                        <div class="carousel-item">
-                        <img class="d-block w-100" src="captiveportal-3.jpg" alt="Third slide">
-                        </div>
+                    <div class="carousel-inner" id="carousel_image">
+                        <!-- captiveportal-customjs.js -->
                     </div>
                     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -116,10 +118,61 @@ session_start();
                     
                     <div class="btn-group special" aria-label="Basic example">
                         <a class="btn btn-primary btn-sm" href="https://facebook.com" target="_blank" role="button">Go to Facebook</a>
-                        <a class="btn btn-danger btn-sm" href="https://youtube.com" target="_blank" role="button">Go to Youtube</a>
+                        <a class="btn btn-danger btn-sm" href="https://youtube.com" target="_blank" role="button">Go to YouTube</a>
                     </div>
                 </div>
-                
+
+                <div class="horizontal-clear"></div>
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <td>
+                            <h6><strong style="color: #fff">Voucher Code: </strong></h6>
+                        </td>
+                        <td>
+                            <h6><span class="badge badge-success">
+                                <?php foreach ($cpdb as $cpent) { 
+                                    if (htmlspecialchars($cpent[2]) == $clientip) {
+                                        printf("%s", htmlspecialchars($cpent[4])); 
+                                        break;
+                                    }
+                                }?>
+                            </span></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h6><strong style="color: #fff">IP Address: </strong></h6>
+                        </td>
+                        <td>
+                            <h6><span class="badge badge-primary"><?=$clientip;?></span></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h6>
+                                <strong style="color: #fff">MAC: </strong>
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                <span class="badge badge-warning">
+                                    <?php foreach ($cpdb as $cpent) { 
+                                        if (htmlspecialchars($cpent[2]) == $clientip) {
+                                            $mac=trim($cpent[3]);
+                                            if (!empty($mac)) {
+                                                $mac_hi = strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]);
+                                                print htmlentities($mac);
+                                                break;
+                                            }
+                                        }
+                                    }?>
+                                </span>
+                            </h6>
+                        </td>
+                    </tr>
+                </table>
+                <div class="horizontal-clear"></div>
+
                 <a class="btn btn-success btn-block d-none" id="btn_relogin" href="http://10.0.0.1" role="button">Re-Login</a>
 
                 <div class="horizontal-clear"></div>
@@ -128,12 +181,8 @@ session_start();
                 </button>
                 <div class="horizontal-clear"></div>
                 <div class="collapse" id="collapseExample">
-                    <div class="card card-body">
-                        <h6><span class="badge badge-primary">05 Pesos</span> 1 Hour</h6>
-                        <h6><span class="badge badge-secondary">10 Pesos</span> 2 Hours</h6>
-                        <h6><span class="badge badge-success">15 Pesos</span> 4 Hours</h6>
-                        <h6><span class="badge badge-danger">20 Pesos</span> 5 Hours</h6>
-                        <h6><span class="badge badge-info">30 Pesos</span> 1 Day</h6>
+                    <div class="card card-body" id="rate">
+                        <!-- captiveportal-customjs.js -->
                     </div>
                 </div>
             </div>
@@ -149,11 +198,27 @@ session_start();
     <script src="captiveportal-popper-1.12.9.min.js"></script>
     <script src="captiveportal-bootstrap.min.js"></script>
 
+    <!-- Custom JavaScript -->
+    <script src="captiveportal-customjs.js"></script>
+
     <script>
   
         document.addEventListener('DOMContentLoaded', function (event) {
+            
             var d = new Date(<?=$_SESSION["year"];?>, <?=$_SESSION["month"];?>, <?=$_SESSION["day"];?>, <?=$_SESSION["hour"];?>, <?=$_SESSION["minute"];?>, <?=$_SESSION["second"];?>, 0);
             var remaining_time = <?=$_SESSION["remaining_time"]; ?>;
+            /*if (remaining_time) {
+                localStorage.setItem('remaining_time', remaining_time);
+                localStorage.setItem('year', <?=$_SESSION["year"];?>);
+                localStorage.setItem('month', <?=$_SESSION["month"];?>);
+                localStorage.setItem('day', <?=$_SESSION["day"];?>);
+                localStorage.setItem('hour', <?=$_SESSION["hour"];?>);
+                localStorage.setItem('minute', <?=$_SESSION["minute"];?>);
+                localStorage.setItem('second', <?=$_SESSION["second"];?>);
+            }
+            
+            remaining_time = localStorage.getItem('remaining_time');*/
+            //var d = new Date(localStorage.getItem('year'), localStorage.getItem('month'), localStorage.getItem('day'), localStorage.getItem('hour'), localStorage.getItem('minute'), localStorage.getItem('second'), 0);
             var countDownDate;
             countDownDate = d;
             countDownDate.setSeconds( countDownDate.getSeconds() + parseInt(remaining_time) );
@@ -191,6 +256,8 @@ session_start();
                     $('audio#disconnected')[0].play();
                 }
             }, 500);
+
+            
         });
         
     </script>
